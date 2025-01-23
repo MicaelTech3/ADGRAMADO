@@ -1,0 +1,79 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #0f2546, #034586); /* Gradiente de fundo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container do formulário */
+.login-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(255, 251, 251, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Título */
+h2 {
+    color: #fcfcfc;
+    margin-bottom: 30px;
+    height: 10%;
+    width: 20%;
+}
+
+/* Estilo para os campos de entrada */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ffffff;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #034586;
+    outline: none;
+}
+
+/* Botão de login */
+button {
+    background-color: #034586;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    height: 20%;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #065aa3;
+}
+
+/* Link de cadastro ou recuperação */
+.footer {
+    margin-top: 20px;
+}
+
+.footer a {
+    text-decoration: none;
+    color: #034586;
+    font-size: 0.9rem;
+}
+
+.footer a:hover {
+    color: #065aa3;
+}
