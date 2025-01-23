@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Administrador</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -12,27 +11,25 @@
             margin: 0;
             padding: 0;
             background-color: #0f2546;
-            height: 100vh; /* Garantir que o body ocupe a altura total da tela */
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Centralizar o conteúdo verticalmente */
+            justify-content: center;
         }
         header {
             background-color: #0f2546;
             color: white;
-            height: auto;
             padding: 1rem;
             text-align: center;
         }
         .container {
             margin: 2rem auto;
             max-width: 800px;
-            width: 100%; /* Garantir que o container ocupe toda a largura */
+            width: 100%;
             background: white;
             padding: 1.5rem;
             border-radius: 50px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex-grow: 1; /* Faz com que o container ocupe o espaço restante */
         }
         button {
             padding: 12px 20px;
@@ -53,7 +50,7 @@
             padding: 0;
         }
         li {
-            padding: 12px;
+            padding: 20px;
             margin: 8px 0;
             background-color: #f9f9f9;
             border-radius: 8px;
@@ -62,19 +59,19 @@
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        li button {
-            background-color: transparent;
-            color: #e74c3c;
-            border: none;
-            font-size: 1.2rem;
+        .add-note-button {
+            background-color: #27ae60;
+            color: white;
+            border-radius: 5px;
+            padding: 5px 10px;
             cursor: pointer;
-            transition: color 0.3s ease;
+            font-size: 0.9rem;
+            margin-left: 10px;
         }
-        li button:hover {
-            color: #c0392b;
+        .add-note-button:hover {
+            background-color: #6e05058a;
         }
         h3 {
-            margin-top: 20px;
             color: #333;
         }
     </style>
@@ -94,55 +91,74 @@
         </ul>
     </div>
 
+    <input type="file" id="file-input" style="display: none;" accept="image/*">
+
     <script>
-        // Carregar as prestações de contas do localStorage
         function loadRecords() {
             const records = JSON.parse(localStorage.getItem('records')) || [];
             const list = document.getElementById('records-list');
-            list.innerHTML = ''; // Limpa a lista
+            list.innerHTML = '';
             records.forEach((record, index) => {
                 const listItem = document.createElement('li');
-                listItem.innerHTML = `${record.name} - R$${record.cost} - ${record.description} <button onclick="deleteRecord(${index})"><i class="fas fa-trash"></i></button>`;
+                listItem.innerHTML = `
+                    ${record.name} - R$${record.cost} - ${record.description}
+                    ${record.notaFiscal ? `<a href="${record.notaFiscal}" target="_blank">Ver Nota Fiscal</a>` : ''}
+                    <button onclick="deleteRecord(${index})"><i class="fas fa-trash"></i></button>
+                    <button class="add-note-button" onclick="triggerFileInput(${index})">Adicionar Nota</button>
+                `;
                 list.appendChild(listItem);
             });
         }
-    
-        // Adicionar uma nova prestação de contas
+
         function addRecord() {
             const name = prompt("Digite o nome da prestação:");
             if (!name) return;
-    
+
             const cost = prompt("Digite o valor da prestação:");
             if (!cost || isNaN(parseFloat(cost))) {
                 alert("Valor inválido!");
                 return;
             }
-    
+
             const description = prompt("Digite a descrição da prestação:");
             if (!description) return;
-    
+
             const records = JSON.parse(localStorage.getItem('records')) || [];
             records.push({ name, cost: parseFloat(cost).toFixed(2), description });
             localStorage.setItem('records', JSON.stringify(records));
             loadRecords();
         }
-    
-        // Apagar uma prestação de contas
+
+        function triggerFileInput(index) {
+            const fileInput = document.getElementById('file-input');
+            fileInput.onchange = function () {
+                const file = fileInput.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const records = JSON.parse(localStorage.getItem('records')) || [];
+                    records[index].notaFiscal = e.target.result;
+                    localStorage.setItem('records', JSON.stringify(records));
+                    loadRecords();
+                };
+                reader.readAsDataURL(file);
+            };
+            fileInput.click();
+        }
+
         function deleteRecord(index) {
             const records = JSON.parse(localStorage.getItem('records')) || [];
             records.splice(index, 1);
             localStorage.setItem('records', JSON.stringify(records));
             loadRecords();
         }
-    
-        // Logout
+
         function logout() {
             window.location.href = 'index.html';
         }
-    
-        // Carrega os registros ao abrir a página
+
         window.onload = loadRecords;
     </script>
-    
 </body>
 </html>

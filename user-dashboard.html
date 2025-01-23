@@ -13,7 +13,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Centraliza o conteúdo verticalmente */
+            justify-content: center;
         }
         header {
             background-color: #0f2546;
@@ -25,12 +25,12 @@
         .container {
             margin: 2rem auto;
             max-width: 800px;
-            width: 100%; /* Garantir que o container ocupe toda a largura */
+            width: 100%;
             background: white;
             padding: 1.5rem;
             border-radius: 50px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex-grow: 1; /* Faz com que o container ocupe o espaço restante */
+            flex-grow: 1;
         }
         button {
             padding: 12px 20px;
@@ -64,6 +64,53 @@
             margin-top: 20px;
             color: #333;
         }
+        .view-note-button {
+            background-color: #27ae60;
+            color: white;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        .view-note-button:hover {
+            background-color: #2ecc71;
+        }
+
+        /* Estilo do modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -80,17 +127,46 @@
         </ul>
     </div>
 
+    <!-- Modal para visualizar a Nota Fiscal -->
+    <div id="notaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Nota Fiscal</h3>
+            <p id="nota-content"></p>
+        </div>
+    </div>
+
     <script>
         // Carregar as prestações de contas do localStorage
         function loadRecords() {
             const records = JSON.parse(localStorage.getItem('records')) || [];
             const list = document.getElementById('records-list');
             list.innerHTML = ''; // Limpa a lista
-            records.forEach(record => {
+            records.forEach((record, index) => {
                 const listItem = document.createElement('li');
-                listItem.innerHTML = `${record.name} - R$${record.cost} - ${record.description}`;
+                listItem.innerHTML = `
+                    ${record.name} - R$${record.cost} - ${record.description}
+                    ${record.notaFiscal ? `<button class='view-note-button' onclick='viewNotaFiscal(${index})'>Ver Nota</button>` : ''}
+                `;
                 list.appendChild(listItem);
             });
+        }
+
+        // Visualizar a nota fiscal no modal
+        function viewNotaFiscal(index) {
+            const records = JSON.parse(localStorage.getItem('records')) || [];
+            const notaFiscal = records[index].notaFiscal;
+            if (notaFiscal) {
+                document.getElementById('nota-content').textContent = notaFiscal;
+                document.getElementById('notaModal').style.display = "block";
+            } else {
+                alert("Nenhuma nota fiscal anexada.");
+            }
+        }
+
+        // Fechar o modal
+        function closeModal() {
+            document.getElementById('notaModal').style.display = "none";
         }
 
         // Logout
