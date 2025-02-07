@@ -69,7 +69,7 @@
             margin-left: 10px;
         }
         .add-note-button:hover {
-            background-color: #6e05058a;
+            background-color: #2ecc71;
         }
         h3 {
             color: #333;
@@ -94,10 +94,12 @@
     <input type="file" id="file-input" style="display: none;" accept="image/*">
 
     <script>
+        // Função para carregar os registros do localStorage
         function loadRecords() {
             const records = JSON.parse(localStorage.getItem('records')) || [];
             const list = document.getElementById('records-list');
             list.innerHTML = '';
+
             records.forEach((record, index) => {
                 const listItem = document.createElement('li');
                 listItem.innerHTML = `
@@ -110,6 +112,7 @@
             });
         }
 
+        // Função para adicionar um novo registro
         function addRecord() {
             const name = prompt("Digite o nome da prestação:");
             if (!name) return;
@@ -129,6 +132,7 @@
             loadRecords();
         }
 
+        // Função para abrir o seletor de arquivos
         function triggerFileInput(index) {
             const fileInput = document.getElementById('file-input');
             fileInput.onchange = function () {
@@ -147,6 +151,7 @@
             fileInput.click();
         }
 
+        // Função para deletar um registro
         function deleteRecord(index) {
             const records = JSON.parse(localStorage.getItem('records')) || [];
             records.splice(index, 1);
@@ -154,10 +159,12 @@
             loadRecords();
         }
 
+        // Função para sair do sistema
         function logout() {
             window.location.href = 'index.html';
         }
 
+        // Carregar registros ao carregar a página
         window.onload = loadRecords;
     </script>
 </body>
