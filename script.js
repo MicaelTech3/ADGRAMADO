@@ -9,8 +9,13 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     };
 
     const userCredentials = {
+<<<<<<< HEAD
         username: "adgramado",
         password: "adgramado1"
+=======
+        username: "admin",
+        password: "adgramado2025"
+>>>>>>> 45ef755c7558c03975be71482fa02e79721bbc99
     };
 
     // Obtém os valores do formulário
