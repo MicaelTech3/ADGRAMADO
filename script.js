@@ -4,18 +4,13 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
     // Dados de login para administrador e usuário padrão
     const adminCredentials = {
-        username: "admin",
+        username: "adm2",
         password: "adgramado2025"
     };
 
     const userCredentials = {
-<<<<<<< HEAD
         username: "adgramado",
         password: "adgramado1"
-=======
-        username: "admin",
-        password: "adgramado2025"
->>>>>>> 45ef755c7558c03975be71482fa02e79721bbc99
     };
 
     // Obtém os valores do formulário
