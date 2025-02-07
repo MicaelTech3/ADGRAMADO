@@ -3,8 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGIN</title>
+    <title>Login</title>
     <link rel="stylesheet" href="styless.css">
+    <style>
+        /* Modal */
+        #notaModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+            max-width: 600px;
+            width: 80%;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <form id="loginForm">
@@ -19,51 +50,81 @@
         <p id="error-message" style="color: red;"></p>
     </form>
 
-    <!-- SDK do Firebase (v9 e superior) -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    <!-- Modal de Visualização da Nota Fiscal -->
+    <div id="notaModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            <div id="nota-content"></div>
+        </div>
+    </div>
 
     <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyCJsgrlBdCRUxaa8Y_4wvkoZuQAKaP5XJc",
-            authDomain: "adgramado-6373e.firebaseapp.com",
-            projectId: "adgramado-6373e",
-            storageBucket: "adgramado-6373e.firebasestorage.app",
-            messagingSenderId: "1056978451801",
-            appId: "1:1056978451801:web:f8272b9190ab79006be048",
-            measurementId: "G-0XPM1V3PGQ"
-        };
-
-        // Inicializar o Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const firestore = firebase.firestore();
-        const storage = firebase.storage();
-
-        // Lógica de login
+        // Função para lidar com o envio do formulário de login
         document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Previne o envio do formulário
+            event.preventDefault(); // Previne o envio do formulário para que o JavaScript gerencie o comportamento
 
+            // Dados de login para administrador e usuário padrão
+            const adminCredentials = {
+                username: "adgramado1",
+                password: "adgramado1"
+            };
+
+            const userCredentials = {
+                username: "admin",
+                password: "adgramado2"
+            };
+
+            // Obtém os valores do formulário
             const inputUsername = document.getElementById('username').value;
             const inputPassword = document.getElementById('password').value;
 
-            // Autenticação com Firebase Auth
-            auth.signInWithEmailAndPassword(inputUsername + "@gmail.com", inputPassword)
-                .then(userCredential => {
-                    const user = userCredential.user;
-                    if (inputUsername === "Admin") {
-                        window.location.href = 'admin-dashboard.html'; // Redireciona para o painel do admin
-                    } else {
-                        window.location.href = 'user-dashboard.html'; // Redireciona para o painel do usuário
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('error-message').textContent = "Erro: " + error.message;
-                });
+            // Verifica as credenciais e redireciona para a página apropriada
+            if (validateLogin(inputUsername, inputPassword, adminCredentials)) {
+                window.location.href = 'admin-dashboard.html'; // Página com permissões de edição/adicionar
+            } else if (validateLogin(inputUsername, inputPassword, userCredentials)) {
+                window.location.href = 'user-dashboard.html'; // Página apenas para visualização
+            } else {
+                showErrorMessage("Usuário ou senha incorretos!");
+            }
         });
+
+        // Função para validar o login
+        function validateLogin(username, password, credentials) {
+            return username === credentials.username && password === credentials.password;
+        }
+
+        // Função para exibir mensagem de erro
+        function showErrorMessage(message) {
+            document.getElementById('error-message').textContent = message;
+        }
+
+        // Função para visualizar a nota fiscal no modal
+        function viewNotaFiscal(index) {
+            const records = JSON.parse(localStorage.getItem('records')) || [];
+            const notaFiscal = records[index].notaFiscal;
+            
+            if (notaFiscal) {
+                displayNotaFiscal(notaFiscal);
+            } else {
+                alert("Nenhuma nota fiscal anexada.");
+            }
+        }
+
+        // Função para exibir a nota fiscal no modal
+        function displayNotaFiscal(notaFiscal) {
+            // Verifica se o conteúdo é uma URL de imagem
+            if (notaFiscal.match(/\.(jpeg|jpg|gif|png)$/)) {
+                document.getElementById('nota-content').innerHTML = `<img src="${notaFiscal}" alt="Nota Fiscal" style="width:100%;">`;
+            } else {
+                document.getElementById('nota-content').textContent = notaFiscal;
+            }
+            document.getElementById('notaModal').style.display = "flex";
+        }
+
+        // Função para fechar o modal
+        function closeModal() {
+            document.getElementById('notaModal').style.display = "none";
+        }
     </script>
 </body>
 </html>

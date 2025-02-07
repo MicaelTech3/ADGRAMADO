@@ -53,9 +53,18 @@ function viewNotaFiscal(index) {
 function displayNotaFiscal(notaFiscal) {
     // Verifica se o conteúdo é uma URL de imagem
     if (notaFiscal.match(/\.(jpeg|jpg|gif|png)$/)) {
+        // Se for uma imagem, exibe a imagem no modal
         document.getElementById('nota-content').innerHTML = `<img src="${notaFiscal}" alt="Nota Fiscal" style="width:100%;">`;
     } else {
+        // Caso contrário, exibe o conteúdo como texto
         document.getElementById('nota-content').textContent = notaFiscal;
     }
+
+    // Exibe o modal
     document.getElementById('notaModal').style.display = "block";
+}
+
+// Função para fechar o modal
+function closeModal() {
+    document.getElementById('notaModal').style.display = "none";
 }
