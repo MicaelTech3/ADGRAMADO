@@ -19,41 +19,50 @@
         <p id="error-message" style="color: red;"></p>
     </form>
 
+    <!-- SDK do Firebase (v9 e superior) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+
     <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJsgrlBdCRUxaa8Y_4wvkoZuQAKaP5XJc",
+            authDomain: "adgramado-6373e.firebaseapp.com",
+            projectId: "adgramado-6373e",
+            storageBucket: "adgramado-6373e.firebasestorage.app",
+            messagingSenderId: "1056978451801",
+            appId: "1:1056978451801:web:f8272b9190ab79006be048",
+            measurementId: "G-0XPM1V3PGQ"
+        };
+
+        // Inicializar o Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const firestore = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Lógica de login
         document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Previne o envio do formulário para que o JavaScript gerencie o comportamento
+            event.preventDefault(); // Previne o envio do formulário
 
-            // Dados de login para administrador (alterados para novos valores)
-            const adminCredentials = {
-                username: "Admin",  // Novo usuário do administrador
-                password: "adgramado2"  // Nova senha do administrador
-            };
-
-            // Dados de login para usuário padrão (alterados para novos valores)
-            const userCredentials = {
-                username: "adgramado1",  // Novo usuário padrão
-                password: "adgramado1"  // Nova senha do usuário padrão
-            };
-
-            // Obtém os valores do formulário
             const inputUsername = document.getElementById('username').value;
             const inputPassword = document.getElementById('password').value;
 
-            // Valida o login para administrador
-            if (inputUsername === adminCredentials.username && inputPassword === adminCredentials.password) {
-                // Redireciona para a página do administrador
-                window.location.href = 'admin-dashboard.html'; // Página com permissões de edição/adicionar
-            } 
-            // Valida o login para usuário padrão
-            else if (inputUsername === userCredentials.username && inputPassword === userCredentials.password) {
-                // Redireciona para a página do usuário
-                window.location.href = 'user-dashboard.html'; // Página apenas para visualização
-            } 
-            // Caso os dados sejam inválidos
-            else {
-                // Exibe uma mensagem de erro
-                document.getElementById('error-message').textContent = "Usuário ou senha incorretos!";
-            }
+            // Autenticação com Firebase Auth
+            auth.signInWithEmailAndPassword(inputUsername + "@gmail.com", inputPassword)
+                .then(userCredential => {
+                    const user = userCredential.user;
+                    if (inputUsername === "Admin") {
+                        window.location.href = 'admin-dashboard.html'; // Redireciona para o painel do admin
+                    } else {
+                        window.location.href = 'user-dashboard.html'; // Redireciona para o painel do usuário
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('error-message').textContent = "Erro: " + error.message;
+                });
         });
     </script>
 </body>
